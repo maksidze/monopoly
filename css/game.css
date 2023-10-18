@@ -1,0 +1,46 @@
+
+.game {
+    width: 100%;
+}
+
+.grid-first-last {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.grid-left-right {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+}
+
+.cell {
+    background: #0c5460;
+    height: 80px;
+    border: #c82333 solid 1px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.player_outer {
+    border: #c82333 solid 1px;
+    position: absolute;
+    z-index: 999;
+}
+
+.player {
+    background: url("/img/player.png") no-repeat;
+    border: #c82333 solid 1px;
+    height: 100%;
+    width: 100%;
+}
+
+.show {
+    background: #F00;
+}
+
+.info-center {
+    height: 100%;
+    background: #86cfda;
+}
