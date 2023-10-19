@@ -1,7 +1,17 @@
 
-let ids = ["r_01", "r_02", "r_03", "r_04", "r_05", "r_06", "r_07", "r_08", "r_09", "r_10",
-    "r_11", "r_12", "r_13", "r_14", "r_15", "r_16", "r_17", "r_18", "r_19", "r_20", "r_21",
-    "r_22", "r_23", "r_24", "r_25", "r_26", "r_27", "r_28", "r_29", "r_30", "r_31", "r_32"];
+let ids = [
+    "r_01",
+    "r_02", "r_03", "r_04", "r_05", "r_06", "r_07", "r_08", "r_09", "r_10",
+    "r_11",
+    "r_12", "r_13", "r_14", "r_15", "r_16", "r_17", "r_18", "r_19", "r_20",
+    "r_21",
+    "r_22", "r_23", "r_24", "r_25", "r_26", "r_27", "r_28", "r_29", "r_30",
+    "r_31",
+    "r_32", "r_33", "r_34", "r_35", "r_36", "r_37", "r_38", "r_39", "r_40"];
+
+let ids_low = [
+    "r_01", "r_11", "r_21", "r_31"
+]
 const MAP_MAX = ids.length - 1;
 const ANIMATION_PLAYER_STEPS = 20;
 
@@ -21,6 +31,19 @@ let suCellSize;
 let movePlayerAnimation = {"enabled": false, "from": null, "to": null, "count": 0}
 let playerPosition = "r_01_0";
 
+let cells = [
+    {
+        "id": "r_02",
+        "type": "CELL_BUILDING",
+        "cost": 1000,
+        "tax": 200,
+    },
+    {
+        "id": "r_03",
+        "type": "CELL_BUILDING",
+    }
+]
+
 function getNextPos() {
     pos = pos < MAP_MAX ? pos + 1 : 0;
 }
@@ -37,6 +60,7 @@ function animateStep(count = 0) {
             stepCount--;
             //document.getElementById(ids[pos]).classList.remove("show");
             getNextPos();
+            while (!getFreeSubCell(document.getElementById(ids[pos]))) getNextPos();
             //document.getElementById(ids[pos]).classList.add("show");
             console.log("Target: " + getFreeSubCell(document.getElementById(ids[pos])));
             startAnimatePlayer(playerPosition, getFreeSubCell(document.getElementById(ids[pos])));
@@ -84,6 +108,14 @@ function easeInOutExpo(x) {
 
 }
 
+function easeOutBack(x) {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+
+}
+
 function linear(x) {
     return x;
 }
@@ -96,8 +128,8 @@ function animatePlayerStep(decrement = true) {
 
     //console.log("Count: " + movePlayerAnimation.count);
     //console.log(elPlayer);
-    let pos_x = window.scrollX + start.left + Math.floor((end.left - start.left) * easeInOutExpo((ANIMATION_PLAYER_STEPS - movePlayerAnimation.count) / ANIMATION_PLAYER_STEPS));
-    let pos_y = window.scrollY + start.top + Math.floor((end.top - start.top) * easeInOutExpo((ANIMATION_PLAYER_STEPS - movePlayerAnimation.count) / ANIMATION_PLAYER_STEPS));
+    let pos_x = window.scrollX + start.left + Math.floor((end.left - start.left) * easeOutBack((ANIMATION_PLAYER_STEPS - movePlayerAnimation.count) / ANIMATION_PLAYER_STEPS));
+    let pos_y = window.scrollY + start.top + Math.floor((end.top - start.top) * easeOutBack((ANIMATION_PLAYER_STEPS - movePlayerAnimation.count) / ANIMATION_PLAYER_STEPS));
     if (decrement) movePlayerAnimation.count--;
     if (movePlayerAnimation.count < 0) {
         movePlayerAnimation.enabled = false;
@@ -137,6 +169,7 @@ window.onload = (event) => {
     for (let cell of ids) {
         let el = document.getElementById(cell);
         for (let i = 0; i < 4; i++) {
+            if (ids_low.indexOf(cell) === -1 && i > 1) break;
             let newEl = document.createElement("div");
             newEl.id = `${cell}_${i}`;
             el.appendChild(newEl);

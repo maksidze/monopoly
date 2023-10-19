@@ -1,25 +1,36 @@
 
 .game {
-    width: 100%;
+    width: 800px;
+    height: 800px;
 }
 
 .grid-first-last {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;
+    height: calc(12vh);
 }
 
 .grid-left-right {
     display: grid;
-    grid-template-columns: 1fr 6fr 1fr;
+    grid-template-columns: 2fr 9fr 2fr;
+}
+
+.cell_h {
+    height: calc(6vh);
 }
 
 .cell {
     background: #86cfda;
-    height: 80px;
-    border: #c82333 solid 1px;
 
+    border: #c82333 solid 1px;
     display: grid;
+}
+
+.cell_ch {
     grid-template-columns: 1fr 1fr;
+}
+
+.cell_cv {
     grid-template-rows: 1fr 1fr;
 }
 
