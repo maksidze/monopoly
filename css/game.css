@@ -14,12 +14,12 @@
 }
 
 .cell {
-    background: #0c5460;
+    background: #86cfda;
     height: 80px;
     border: #c82333 solid 1px;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
 }
 
