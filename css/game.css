@@ -4,6 +4,10 @@
     height: 800px;
 }
 
+.highlight {
+    border: #c82333 dotted 1px;
+}
+
 .grid-first-last {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;

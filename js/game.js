@@ -1,21 +1,8 @@
 
-let ids = [
-    "r_01",
-    "r_02", "r_03", "r_04", "r_05", "r_06", "r_07", "r_08", "r_09", "r_10",
-    "r_11",
-    "r_12", "r_13", "r_14", "r_15", "r_16", "r_17", "r_18", "r_19", "r_20",
-    "r_21",
-    "r_22", "r_23", "r_24", "r_25", "r_26", "r_27", "r_28", "r_29", "r_30",
-    "r_31",
-    "r_32", "r_33", "r_34", "r_35", "r_36", "r_37", "r_38", "r_39", "r_40"];
 
-let ids_low = [
-    "r_01", "r_11", "r_21", "r_31"
-]
-const MAP_MAX = ids.length - 1;
+
+
 const ANIMATION_PLAYER_STEPS = 20;
-
-let players = []
 
 let pos = 0;
 
@@ -31,7 +18,26 @@ let suCellSize;
 let movePlayerAnimation = {"enabled": false, "from": null, "to": null, "count": 0}
 let playerPosition = "r_01_0";
 
-let cells = [
+//==============================================================================================================
+// server variables
+
+let map_cells_ids;
+
+let map_cells_size;
+
+let MAP_MAX;
+
+let players_position = [];
+let map_cells_owners = [];
+let map_cells_level = [];
+
+let player_animate_steps = [];
+
+
+
+
+
+let map_cells_types = [
     {
         "id": "r_02",
         "type": "CELL_BUILDING",
@@ -60,10 +66,10 @@ function animateStep(count = 0) {
             stepCount--;
             //document.getElementById(ids[pos]).classList.remove("show");
             getNextPos();
-            while (!getFreeSubCell(document.getElementById(ids[pos]))) getNextPos();
+            while (!getFreeSubCell(document.getElementById(map_cells_ids[pos]))) getNextPos();
             //document.getElementById(ids[pos]).classList.add("show");
-            console.log("Target: " + getFreeSubCell(document.getElementById(ids[pos])));
-            startAnimatePlayer(playerPosition, getFreeSubCell(document.getElementById(ids[pos])));
+            console.log("Target: " + getFreeSubCell(document.getElementById(map_cells_ids[pos])));
+            startAnimatePlayer(playerPosition, getFreeSubCell(document.getElementById(map_cells_ids[pos])));
         } else {
             clearInterval(timerStep);
         }
@@ -159,6 +165,10 @@ function test() {
 }
 
 
+function main_menu() {
+
+}
+
 window.onload = (event) => {
     console.log("test");
     elPlayer = document.getElementById("player");
@@ -166,22 +176,89 @@ window.onload = (event) => {
     console.log(elPlayer.getBoundingClientRect());
     console.log(elGame.getBoundingClientRect());
 
-    for (let cell of ids) {
-        let el = document.getElementById(cell);
-        for (let i = 0; i < 4; i++) {
-            if (ids_low.indexOf(cell) === -1 && i > 1) break;
-            let newEl = document.createElement("div");
-            newEl.id = `${cell}_${i}`;
-            el.appendChild(newEl);
-        }
-    }
+    // for (let i = 0; i < map_cells_ids.length; i++) {
+    //     let cell = map_cells_ids[i];
+    //     let el = document.getElementById(cell);
+    //     for (let j = 0; j < map_cells_size[i]; j++) {
+    //         let newEl = document.createElement("div");
+    //         newEl.id = `${cell}_${j}`;
+    //         el.appendChild(newEl);
+    //     }
+    // }
 
-    let mp = document.createElement("div");
-    mp.classList.add("player")
-    document.getElementById("r_01_0").appendChild(mp);
+    // let mp = document.createElement("div");
+    // mp.classList.add("player")
+    // document.getElementById("r_01_0").appendChild(mp);
+    //document.getElementById("r_01_0").getBoundingClientRect();
 
 }
 
 onresize = (event) => {
     animatePlayerStep(false);
 };
+
+
+//==============================================================================================================
+//============================================- API -===========================================================
+//==============================================================================================================
+function auth() {
+    $.post("/api/auth.php", {"username": document.getElementById("username").value,
+        "password": document.getElementById("password").value}, function(data) {
+        console.log(data);
+        if (data.result === 0) {
+            localStorage.setItem("token", data.token);
+            document.getElementById("auth").style.display = "none";
+            document.getElementById("user_actions").style.display = "";
+        } else {
+            document.getElementById("auth_message").innerText = data.message;
+        }
+    });
+}
+
+function load_map(html, js) {
+    $.get(html, function (data) {
+        document.getElementById("game").innerHTML = data;
+    });
+
+    $.get(js, function (data) {
+        map_cells_ids = data.map_cells_ids;
+        map_cells_size = data.map_cells_size;
+        MAP_MAX = map_cells_ids.length - 1;
+
+        for (let i = 0; i < map_cells_ids.length; i++) {
+            let cell = map_cells_ids[i];
+            let el = document.getElementById(cell);
+            for (let j = 0; j < map_cells_size[i]; j++) {
+                let newEl = document.createElement("div");
+                newEl.id = `${cell}_${j}`;
+                el.appendChild(newEl);
+            }
+        }
+
+        let mp = document.createElement("div");
+        mp.classList.add("player")
+        document.getElementById("r_01_0").appendChild(mp);
+    });
+
+}
+
+function create_session() {
+    $.post("/api/create_game.php", {"token": localStorage.getItem("token")}, function(data) {
+        console.log(data);
+        if (data.result === 0) {
+            document.getElementById("session_id").value = data.code;
+            load_map(data.html, data.json);
+        } else {
+            //document.getElementById("auth_message").innerText = data.message;
+            get_game_info();
+        }
+    });
+}
+
+function get_game_info() {
+    $.post("/api/user_game_info.php", {"token": localStorage.getItem("token")}, function(data) {
+        console.log(data);
+        load_map(data.html, data.json);
+    });
+}
+
