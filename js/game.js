@@ -1,7 +1,4 @@
 
-
-
-
 const ANIMATION_PLAYER_STEPS = 20;
 
 let pos = 0;
@@ -22,9 +19,7 @@ let playerPosition = "r_01_0";
 // server variables
 
 let map_cells_ids;
-
 let map_cells_size;
-
 let MAP_MAX;
 
 let players_position = [];
@@ -32,9 +27,6 @@ let map_cells_owners = [];
 let map_cells_level = [];
 
 let player_animate_steps = [];
-
-
-
 
 
 let map_cells_types = [
